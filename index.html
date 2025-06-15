@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Pare de se Comparar: Melhore 1% ao Dia</title>
+<style>
+  body { max-width: 700px; margin: 20px auto; font-family: Arial, sans-serif; background:#f9f9f9; color:#333; }
+  h1 { text-align:center; color:#2c3e50; }
+  p, ul, blockquote { line-height:1.5em; }
+  blockquote { font-style: italic; color: #555; margin-left: 20px; }
+  #comentarios { margin-top: 40px; border-top: 2px solid #ccc; padding-top: 20px; }
+  .comentario { background: white; border: 1px solid #ddd; margin-bottom: 10px; padding: 10px; border-radius: 4px; }
+  .comentario strong { color: #2c3e50; }
+  form { margin-top: 20px; display: flex; flex-direction: column; }
+  input[type="text"], textarea { font-size: 1em; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; resize: vertical; }
+  button { width: 120px; font-size: 1em; padding: 8px; border: none; border-radius: 4px; background: #27ae60; color: white; cursor: pointer; align-self: flex-start; }
+  button:hover { background: #219150; }
+  #erro { color: red; margin-bottom: 10px; }
+  #sucesso { color: green; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<h1>Pare de se Comparar: Melhore 1% ao Dia</h1>
+
+<p>Vivemos numa era de comparações constantes. Redes sociais mostram o lado perfeito da vida dos outros: viagens, conquistas, aparência. E com isso, surge a dúvida:</p>
+<blockquote>
+  <p>"Por que eu não tenho isso?"<br>"Será que estou ficando para trás?"</p>
+</blockquote>
+
+<h2>A Armadilha da Comparação</h2>
+<p>Quando você se compara com os outros, está olhando só para o resultado final deles. Não vê o esforço, as falhas e os momentos de dúvida que eles enfrentaram. Isso gera ansiedade e desmotivação.</p>
+
+<h2>Compare-se Apenas com Você Mesmo</h2>
+<p>O melhor jeito de medir o seu progresso é simples: pergunte-se todos os dias:</p>
+<blockquote><p>"Eu estou melhor do que ontem?"</p></blockquote>
+<p>Melhore apenas 1% ao dia. Pequenas ações diárias podem gerar uma transformação gigante ao longo de um ano.</p>
+
+<h3>Dicas para Melhorar 1% ao Dia:</h3>
+<ul>
+  <li>Leia uma página de um livro</li>
+  <li>Faça 5 minutos de exercício</li>
+  <li>Aprenda uma nova palavra</li>
+  <li>Organize um pequeno espaço da sua casa</li>
+  <li>Estude algo novo</li>
+</ul>
+
+<h2>O Poder do Acúmulo</h2>
+<p>Se você melhorar apenas 1% por dia, ao final de um ano, terá melhorado cerca de 37 vezes em relação ao começo.</p>
+<p>Pequenas ações + Tempo + Consistência = Grande Transformação</p>
+
+<h2>Conclusão</h2>
+<p>Da próxima vez que for se comparar com alguém, pare e pense:</p>
+<blockquote><p>"O que eu posso fazer hoje para ser 1% melhor que ontem?"</p></blockquote>
+<p>Esse é o caminho para o crescimento real.</p>
+
+<section id="comentarios">
+  <h2>Comentários</h2>
+
+  <p id="erro" style="display:none;"></p>
+  <p id="sucesso" style="display:none;"></p>
+
+  <form id="formComentario">
+    <input type="text" id="nome" placeholder="Seu nome" maxlength="50" required />
+    <textarea id="comentario" placeholder="Escreva seu comentário" maxlength="500" rows="4" required></textarea>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div id="listaComentarios"></div>
+</section>
+
+<script>
+  const palavroes = ["merda", "idiota", "burro", "otario", "fdp", "caralho", "desgraca",
+                     "bosta", "droga", "inferno", "maldito", "porra", "filho da", "vagabundo",
+                     "estupido", "imbecil"];
+
+  const form = document.getElementById('formComentario');
+  const nomeInput = document.getElementById('nome');
+  const comentarioInput = document.getElementById('comentario');
+  const erroP = document.getElementById('erro');
+  const sucessoP = document.getElementById('sucesso');
+  const listaComentarios = document.getElementById('listaComentarios');
+
+  function contemPalavraProibida(texto) {
+    texto = texto.toLowerCase().replace(/[^\w\s]/gi, '');
+    return palavroes.some(p => texto.includes(p));
+  }
+
+  function salvarComentario(nome, comentario) {
+    let comentarios = JSON.parse(localStorage.getItem('comentarios') || "[]");
+    const data = new Date().toLocaleString('pt-BR');
+    comentarios.push({nome, comentario, data});
+    localStorage.setItem('comentarios', JSON.stringify(comentarios));
+  }
+
+  function carregarComentarios() {
+    listaComentarios.innerHTML = '';
+    let comentarios = JSON.parse(localStorage.getItem('comentarios') || "[]");
+    comentarios.reverse().forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'comentario';
+      div.innerHTML = `<strong>${escapeHtml(c.nome)}</strong> <em>em ${c.data}</em>:<br>${escapeHtml(c.comentario).replace(/\n/g, '<br>')}`;
+      listaComentarios.appendChild(div);
+    });
+    if (comentarios.length === 0) {
+      listaComentarios.innerHTML = "<p>Nenhum comentário ainda.</p>";
+    }
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    erroP.style.display = 'none';
+    sucessoP.style.display = 'none';
+    const nome = nomeInput.value.trim();
+    const comentario = comentarioInput.value.trim();
+
+    if (!nome || !comentario) {
+      erroP.textContent = 'Por favor, preencha nome e comentário.';
+      erroP.style.display = 'block';
+      return;
+    }
+
+    if (nome.length > 50) {
+      erroP.textContent = 'Nome pode ter até 50 caracteres.';
+      erroP.style.display = 'block';
+      return;
+    }
+
+    if (comentario.length > 500) {
+      erroP.textContent = 'Comentário pode ter até 500 caracteres.';
+      erroP.style.display = 'block';
+      return;
+    }
+
+    if (contemPalavraProibida(nome) || contemPalavraProibida(comentario)) {
+      erroP.textContent = 'Comentário bloqueado por linguagem inadequada.';
+      erroP.style.display = 'block';
+      return;
+    }
+
+    salvarComentario(nome, comentario);
+    sucessoP.textContent = 'Comentário enviado com sucesso!';
+    sucessoP.style.display = 'block';
+
+    nomeInput.value = '';
+    comentarioInput.value = '';
+
+    carregarComentarios();
+  });
+
+  // Carrega comentários ao iniciar a página
+  carregarComentarios();
+</script>
+
+</body>
+</html>
